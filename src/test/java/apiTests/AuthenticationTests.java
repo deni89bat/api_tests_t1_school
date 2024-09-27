@@ -1,6 +1,7 @@
 package apiTests;
 
 import apiTests.schema.LoginRequest;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,6 +40,7 @@ public class AuthenticationTests extends BaseTest {
 
     private Response getLoginResponse(String username, String password) {
         return given(specification)
+                .contentType(ContentType.JSON)
                 .body(new LoginRequest(username, password))
                 .when()
                 .post(loginPath);
