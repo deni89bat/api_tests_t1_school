@@ -1,5 +1,6 @@
 package apiTests;
 
+import apiTests.schema.LoginRequest;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
@@ -16,13 +17,27 @@ public class BaseTest {
 
     public static final RequestSpecification specification = given()
             .baseUri("http://9b142cdd34e.vps.myjino.ru:49268")
-            //.contentType(ContentType.JSON)
             .accept(ContentType.JSON);
+
     static {
         RestAssured.useRelaxedHTTPSValidation();
         filters(new RequestLoggingFilter(System.out), new ResponseLoggingFilter(System.out));
     }
 
+    protected static String getValidAuthToken(String username, String password) {
+        return given(specification)
+                .contentType(ContentType.JSON)
+                .body(new LoginRequest(username, password))
+                .when()
+                .post(loginPath)
+                .then()
+                .assertThat()
+                .statusCode(200)
+                .extract()
+                .body()
+                .jsonPath()
+                .getString("access_token");
+    }
 
 }
 

@@ -4,6 +4,7 @@ import apiTests.schema.LoginRequest;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
@@ -26,6 +27,7 @@ public class AuthenticationTests extends BaseTest {
 
     @Test
     @DisplayName("Проверка аутентификации незарегистрированного пользователя")
+    @Tag("Negative")
     public void unregisteredUserTest() {
         Response response = getLoginResponse(unregisteredUser, validPassword);
         checkResponse(response, 401, false, "Invalid credentials");
@@ -33,6 +35,7 @@ public class AuthenticationTests extends BaseTest {
 
     @Test
     @DisplayName("Проверка аутентификации зарегистрированного пользователя с неверным паролем")
+    @Tag("Negative")
     public void wrongPasswordTest() {
         Response response = getLoginResponse(registeredUser, wrongPassword);
         checkResponse(response, 401, false, "Invalid credentials");

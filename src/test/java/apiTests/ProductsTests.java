@@ -4,6 +4,7 @@ import apiTests.schema.Product;
 import io.restassured.common.mapper.TypeRef;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -28,9 +29,6 @@ public class ProductsTests extends BaseTest {
     @DisplayName("Проверка получения списка продуктов")
     public void getProductsListTest() {
         List<Product> productsList = getProductsList();
-        // Если productsList равен null, это может указывать на то, что произошла ошибка во время получения данных, например, если сервер не ответил или произошла ошибка десериализации.
-        assertNotNull(productsList, "Продуктов не получено, список null.");
-        // Может означать, что запрос прошел успешно (сервер ответил и вернул статус 200), но при этом нет продуктов для отображения(в бд просто нет продуктов).
         assertFalse(productsList.isEmpty(), "Список продуктов пуст.");
     }
 
@@ -38,13 +36,14 @@ public class ProductsTests extends BaseTest {
     @DisplayName("Проверка поиска продукта по ID")
     public void searchProductByIdTest() {
         List<Product> product = getProductById(productId);
-        assertNotNull(product, "Продукт не получен, список null.");
-        assertFalse(product.isEmpty(), "В ответе пустой список []");
-        assertEquals(Integer.parseInt(productId), product.get(0).getId(), "ID продукта не совпадает с запрошенным");
+        assertFalse(product.isEmpty(), "Продукт не найден,в ответе пустой список []");
+        assertEquals(Integer.parseInt(productId), product.get(0).getId(), "ID продукта в ответе не совпадает с запрошенным");
+        assertEquals(1, product.size(), "В ответе вернулось более одного продукта");
     }
 
     @Test
     @DisplayName("Проверка поиска несуществующего продукта по ID")
+    @Tag("Negative")
     public void getNonExistentProductByIdTest() {
         String nonExistentProductId = "666";
 
